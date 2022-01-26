@@ -21,6 +21,9 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       set(val: string[]) {
         this.setDataValue('wishes', val.join(';'));
       },
+    },
+    giver: {
+      type: DataTypes.STRING,
     }
   });
 

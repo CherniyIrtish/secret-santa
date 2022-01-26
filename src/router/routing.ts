@@ -34,17 +34,19 @@ const createParticipant = async(req: Request, res: Response) => {
         return res.status(RESPONSE_CODES.unprocessableEntity).json({ errors: errors.array() });
     }
 
-    const createdParticipant = await participantsController.createParticipant(req.body);
+    const result = await participantsController.createParticipant(req.body);
 
-    if (createdParticipant) {
-        return res.status(RESPONSE_CODES.ok).send(createdParticipant);
+    if (typeof result !== 'string') {
+        return res.status(RESPONSE_CODES.ok).send(result);
+    } else {
+        return res.status(RESPONSE_CODES.unprocessableEntity).send(result);
     }
-
-    return res.status(RESPONSE_CODES.unprocessableEntity).send('Participant with sent name already exist');
 };
 
 const shuffle = async(req: Request, res: Response) => {
-    res.status(RESPONSE_CODES.ok).send('shuffle');
+    const response = await participantsController.shuffle();
+
+    res.status(RESPONSE_CODES.ok).send(response);
 };
 
 router.get('/participants', getParticipantValidator, getParticipantById);
