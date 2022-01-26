@@ -1,4 +1,4 @@
 node_modules/
-database/database.sqlite
+database.sqlite
 .idea/
 .git
