@@ -27,11 +27,15 @@ export class ParticipantsController {
             return `Min number of participants cannot be less than 3, now ${participants.length}`;
         }
 
-        const givers = participants.sort(() => Math.random() - 0.5);
-
-        givers.forEach( (giver: any, index: number) => {
-            db.Participant.findOne({ where: { id: index + 1 } })
-            .then((user: any) => user.update({ giver : giver.id }))
+        participants.forEach((participant: any) => {
+            db.Participant.findOne({ where: { id: participant.id } })
+            .then((user: any) => {
+                if (participant.id === participants.length) {
+                    user.update({ giver: 1 });
+                } else {
+                    user.update({ giver: participant.id + 1 });
+                }
+            });
         });
 
         return 'Successfully shuffled';
