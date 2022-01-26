@@ -6,6 +6,12 @@ export class ParticipantsController {
     }
 
     async createParticipant(participant: any) {
-        return await db.Participant.create(participant);
+        const isParticipantExist = await db.Participant.findOne({ where: { lastName: participant.lastName } });
+
+        if (!isParticipantExist) {
+            return await db.Participant.create(participant);
+        }
+
+        return null;
     }
 }

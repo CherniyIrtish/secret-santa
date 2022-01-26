@@ -13,7 +13,7 @@ const connectDB = async() => {
         storage: './src/database/database.sqlite'
     });
 
-    await sequelize.sync({ force: true });
+
 
     fs.readdirSync(__dirname)
     .filter((file: any) => file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.ts')
@@ -27,9 +27,10 @@ const connectDB = async() => {
             db[modelName].associate(db);
         }
     });
-
     db.sequelize = sequelize;
     db.Sequelize = Sequelize;
+
+    await sequelize.sync({ force: true });
 };
 
 export { connectDB, db };

@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express';
+
 const router: Router = require('express').Router();
 import { validationResult } from 'express-validator';
 
@@ -9,7 +10,7 @@ import RESPONSE_CODES from '../constants/responseCodes';
 
 const participantsController = new ParticipantsController();
 
-const getParticipantById = async (req: Request, res: Response) => {
+const getParticipantById = async(req: Request, res: Response) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -17,13 +18,16 @@ const getParticipantById = async (req: Request, res: Response) => {
     }
 
     const participantId = req.query.userId;
-
     const participant = await participantsController.getParticipantById(participantId);
+
+    if (!participant) {
+        return res.status(RESPONSE_CODES.notFound).send('Participant with sent id cannot be found');
+    }
 
     return res.status(RESPONSE_CODES.ok).send(participant);
 };
 
-const createParticipant = async (req: Request, res: Response) => {
+const createParticipant = async(req: Request, res: Response) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -32,10 +36,14 @@ const createParticipant = async (req: Request, res: Response) => {
 
     const createdParticipant = await participantsController.createParticipant(req.body);
 
-    res.status(RESPONSE_CODES.ok).send(createdParticipant);
+    if (createdParticipant) {
+        return res.status(RESPONSE_CODES.ok).send(createdParticipant);
+    }
+
+    return res.status(RESPONSE_CODES.unprocessableEntity).send('Participant with sent name already exist');
 };
 
-const shuffle = async (req: Request, res: Response) => {
+const shuffle = async(req: Request, res: Response) => {
     res.status(RESPONSE_CODES.ok).send('shuffle');
 };
 

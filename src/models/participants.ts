@@ -9,6 +9,18 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     lastName: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    wishes: {
+      type: DataTypes.STRING,
+      allowNull: false,
+
+      get() {
+        return this.getDataValue('wishes').split(';')
+      },
+
+      set(val: string[]) {
+        this.setDataValue('wishes', val.join(';'));
+      },
     }
   });
 
