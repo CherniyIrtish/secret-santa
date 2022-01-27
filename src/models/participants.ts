@@ -22,7 +22,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
         this.setDataValue('wishes', val.join(';'));
       },
     },
-    giver: {
+    gifted: {
       type: DataTypes.STRING,
     }
   });

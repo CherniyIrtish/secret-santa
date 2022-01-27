@@ -1,24 +1,26 @@
 import { Request, Response, Router } from 'express';
-
-const router: Router = require('express').Router();
-import { validationResult } from 'express-validator';
+import { ValidationError } from 'express-validator/src/base';
+import { Result, validationResult } from 'express-validator';
 
 import { ParticipantsController } from '../controllers/participants';
 import { getParticipantValidator, createParticipantValidator } from '../validators';
 import RESPONSE_CODES from '../constants/responseCodes';
+import { IParticipant } from '../interfaces/participant';
 
 
-const participantsController = new ParticipantsController();
 
-const getParticipantById = async(req: Request, res: Response) => {
-    const errors = validationResult(req);
+const router: Router = require('express').Router();
+const participantsController: ParticipantsController = new ParticipantsController();
+
+const getParticipantById = async(req: Request, res: Response): Promise<Response> => {
+    const errors: Result<ValidationError> = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(RESPONSE_CODES.unprocessableEntity).json({ errors: errors.array() });
     }
 
-    const participantId = req.query.userId;
-    const participant = await participantsController.getParticipantById(participantId);
+    const participantId: string = req.query.userId as string;
+    const participant: IParticipant | null = await participantsController.getParticipantById(participantId);
 
     if (!participant) {
         return res.status(RESPONSE_CODES.notFound).send('Participant with sent id cannot be found');
@@ -27,14 +29,14 @@ const getParticipantById = async(req: Request, res: Response) => {
     return res.status(RESPONSE_CODES.ok).send(participant);
 };
 
-const createParticipant = async(req: Request, res: Response) => {
-    const errors = validationResult(req);
+const createParticipant = async(req: Request, res: Response): Promise<Response> => {
+    const errors: Result<ValidationError> = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(RESPONSE_CODES.unprocessableEntity).json({ errors: errors.array() });
     }
 
-    const result = await participantsController.createParticipant(req.body);
+    const result: IParticipant | string = await participantsController.createParticipant(req.body);
 
     if (typeof result !== 'string') {
         return res.status(RESPONSE_CODES.ok).send(result);
@@ -43,10 +45,10 @@ const createParticipant = async(req: Request, res: Response) => {
     }
 };
 
-const shuffle = async(req: Request, res: Response) => {
-    const response = await participantsController.shuffle();
+const shuffle = async(req: Request, res: Response): Promise<Response> => {
+    const response: string = await participantsController.shuffle();
 
-    res.status(RESPONSE_CODES.ok).send(response);
+    return res.status(RESPONSE_CODES.ok).send(response);
 };
 
 router.get('/participants', getParticipantValidator, getParticipantById);
