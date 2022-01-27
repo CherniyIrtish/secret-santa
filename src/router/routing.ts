@@ -8,7 +8,6 @@ import RESPONSE_CODES from '../constants/responseCodes';
 import { IParticipant } from '../interfaces/participant';
 
 
-
 const router: Router = require('express').Router();
 const participantsController: ParticipantsController = new ParticipantsController();
 
@@ -19,14 +18,22 @@ const getParticipantById = async(req: Request, res: Response): Promise<Response>
         return res.status(RESPONSE_CODES.unprocessableEntity).json({ errors: errors.array() });
     }
 
-    const participantId: string = req.query.userId as string;
+    const participantId: string = req.query.id as string;
     const participant: IParticipant | null = await participantsController.getParticipantById(participantId);
 
     if (!participant) {
-        return res.status(RESPONSE_CODES.notFound).send('Participant with sent id cannot be found');
+        return res.status(RESPONSE_CODES.notFound).send('Participant didnt find');
     }
 
-    return res.status(RESPONSE_CODES.ok).send(participant);
+    if (!participant.gifted) {
+        return res.status(RESPONSE_CODES.ok).send('Wait for the Christmas');
+    }
+
+    const giftedParticipant: IParticipant | null = await participantsController.getParticipantById(participant.gifted);
+
+    return res.status(RESPONSE_CODES.ok).send(
+        {firstName: giftedParticipant?.firstName, lastName: giftedParticipant?.lastName, wishes: giftedParticipant?.wishes}
+    );
 };
 
 const createParticipant = async(req: Request, res: Response): Promise<Response> => {
