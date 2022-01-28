@@ -1,5 +1,6 @@
 import { db } from '../models';
 import { IParticipant } from '../interfaces/participant';
+import { IGame } from '../interfaces/game';
 import { Model } from 'sequelize';
 
 export class ParticipantsController {
@@ -10,16 +11,21 @@ export class ParticipantsController {
     async createParticipant(participant: IParticipant): Promise<IParticipant | string> {
         const isParticipantExist = await db.Participant.findOne({ where: { lastName: participant.lastName } });
         const participants = await db.Participant.findAll();
+        const isGameStarted: IGame[] = await db.Game.findAll();
 
-        if (!isParticipantExist && participants.length <= 500) {
-            return await db.Participant.create(participant);
+        if (isGameStarted.length) {
+            return 'Game has already started, see next year';
         }
 
         if (isParticipantExist) {
             return 'Participant with sent name already exist';
         }
 
-        return 'Participants number already 500, we cannot register more';
+        if (participants.length >= 500) {
+            return 'Participants number already 500, we cannot register more';
+        }
+
+        return await db.Participant.create(participant);
     }
 
     async shuffle(): Promise<string> {
@@ -39,6 +45,8 @@ export class ParticipantsController {
                 }
             });
         });
+
+        await db.Game.create({isStarted: true});
 
         return 'Successfully shuffled';
     }

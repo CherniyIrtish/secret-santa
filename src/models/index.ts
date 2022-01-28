@@ -13,8 +13,6 @@ const connectDB = async() => {
         storage: './src/database/database.sqlite'
     });
 
-
-
     fs.readdirSync(__dirname)
     .filter((file: any) => file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.ts')
     .forEach((file: any) => {
