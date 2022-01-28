@@ -19,12 +19,12 @@
     }
   ],
   "paths": {
-    "/api/v1/participants?={id}": {
+    "/api/v1/participants?id={id}": {
       "get": {
         "tags": [
           "user"
         ],
-        "summary": "Get a participant by id",
+        "summary": "Get a donee participant by id",
         "operationId": "getParticipantById",
         "parameters": [
           {
@@ -69,18 +69,20 @@
             }
           }
         }
-      },
+      }
+    },
+    "/api/v1/participants": {
       "post": {
         "tags": [
-          "user"
+          "participant"
         ],
-        "summary": "Update a user",
+        "summary": "Create a participant",
         "operationId": "updateUser",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "id of a user to update",
+            "description": "id of a participant to create",
             "required": true,
             "schema": {
               "type": "integer"
@@ -92,7 +94,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserDto"
+                "$ref": "#/components/schemas/Participant"
               }
             }
           },
@@ -104,7 +106,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "$ref": "#/components/schemas/Participant"
                 }
               }
             }
@@ -120,7 +122,7 @@
             }
           },
           "404": {
-            "description": "User not found",
+            "description": "Participant not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -132,64 +134,33 @@
         }
       }
     },
-    "/api/v1/users": {
-      "get": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Get list of users",
-        "operationId": "getUsers",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User",
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      },
+    "/api/v1/shuffle": {
       "post": {
         "tags": [
-          "user"
+          "shuffle"
         ],
-        "summary": "Create a user",
-        "operationId": "createUser",
-        "requestBody": {
-          "description": "Created user object",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserDto"
-              }
+        "summary": "Shuffle a participant",
+        "operationId": "participant",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Shuffle a participant",
+            "required": true,
+            "schema": {
+              "type": "integer"
             }
-          },
-          "required": true
-        },
+          }
+        ],
         "responses": {
-          "201": {
-            "description": "User created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
+          "200": {
+            "description": "Successfully shuffled"
           },
           "400": {
-            "description": "Invalid payload supplied",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Invalid payload supplied"
+          },
+          "404": {
+            "description": "Participant not found"
           }
         }
       }
@@ -197,21 +168,6 @@
   },
   "components": {
     "schemas": {
-      "UserDto": {
-        "type": "object",
-        "properties": {
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "age": {
-            "type": "integer",
-            "format": "int64"
-          }
-        }
-      },
       "Participant": {
         "type": "object",
         "properties": {
@@ -225,9 +181,8 @@
           "lastName": {
             "type": "string"
           },
-          "age": {
-            "type": "integer",
-            "format": "int64"
+          "wishes": {
+            "type": "array[]"
           }
         }
       },
@@ -250,7 +205,7 @@
             "type": "string"
           },
           "message": {
-            "type": "string"
+            "type": "object"
           }
         }
       }
