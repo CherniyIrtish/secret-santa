@@ -29,6 +29,12 @@ export class ParticipantsController {
     }
 
     async shuffle(): Promise<string> {
+        const isGameStarted: IGame[] = await db.Game.findAll();
+
+        if (isGameStarted.length) {
+            return 'Sorry you are late we have been already celebrating';
+        }
+
         const participants: Model[] = await db.Participant.findAll();
 
         if (participants.length < 3) {

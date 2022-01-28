@@ -8,7 +8,7 @@ let sequelize: any;
 
 const connectDB = async() => {
 
-    sequelize = new Sequelize({
+    sequelize = await new Sequelize({
         dialect: 'sqlite',
         storage: './src/database/database.sqlite'
     });
@@ -25,6 +25,7 @@ const connectDB = async() => {
             db[modelName].associate(db);
         }
     });
+
     db.sequelize = sequelize;
     db.Sequelize = Sequelize;
 

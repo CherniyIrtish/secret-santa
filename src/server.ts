@@ -18,3 +18,4 @@ server.listen(port, () => {
     console.log(`Secret Santa app listening at http://localhost:${port}`);
 });
 
+module.exports = server;
