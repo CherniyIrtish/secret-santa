@@ -1,4 +1,4 @@
 node_modules/
-database/*
+src/database/*
 .idea/
 .git
