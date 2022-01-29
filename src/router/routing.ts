@@ -19,7 +19,7 @@ const getParticipantById = async(req: Request, res: Response): Promise<Response>
     }
 
     const participantId: string = req.query.id as string;
-    const participant: IParticipant | null = await participantsController.getParticipantById(participantId);
+    const participant: IParticipant|null = await participantsController.getParticipantById(participantId);
 
     if (!participant) {
         return res.status(RESPONSE_CODES.notFound).send('Participant didnt find');
@@ -29,10 +29,14 @@ const getParticipantById = async(req: Request, res: Response): Promise<Response>
         return res.status(RESPONSE_CODES.ok).send('Wait for the Christmas');
     }
 
-    const giftedParticipant: IParticipant | null = await participantsController.getParticipantById(participant.gifted);
+    const giftedParticipant: IParticipant|null = await participantsController.getParticipantById(participant.gifted);
 
     return res.status(RESPONSE_CODES.ok).send(
-        {firstName: giftedParticipant?.firstName, lastName: giftedParticipant?.lastName, wishes: giftedParticipant?.wishes}
+        {
+            firstName: giftedParticipant?.firstName,
+            lastName: giftedParticipant?.lastName,
+            wishes: giftedParticipant?.wishes
+        }
     );
 };
 
@@ -43,19 +47,23 @@ const createParticipant = async(req: Request, res: Response): Promise<Response> 
         return res.status(RESPONSE_CODES.unprocessableEntity).json({ errors: errors.array() });
     }
 
-    const result: IParticipant | string = await participantsController.createParticipant(req.body);
+    const result: IParticipant|string = await participantsController.createParticipant(req.body);
 
     if (typeof result !== 'string') {
-        return res.status(RESPONSE_CODES.ok).send(result);
+        return res.status(RESPONSE_CODES.created).send(result);
     } else {
         return res.status(RESPONSE_CODES.unprocessableEntity).send(result);
     }
 };
 
 const shuffle = async(req: Request, res: Response): Promise<Response> => {
-    const response: string = await participantsController.shuffle();
+    const response: {code: number, message: string} = await participantsController.shuffle();
 
-    return res.status(RESPONSE_CODES.ok).send(response);
+    if (response.code === 422) {
+        return res.status(RESPONSE_CODES.unprocessableEntity).send(response.message);
+    }
+
+    return res.status(RESPONSE_CODES.ok).send(response.message);
 };
 
 router.get('/participants', getParticipantValidator, getParticipantById);

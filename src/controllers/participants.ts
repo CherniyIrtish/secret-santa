@@ -4,13 +4,13 @@ import { IGame } from '../interfaces/game';
 import { Model } from 'sequelize';
 
 export class ParticipantsController {
-    async getParticipantById(participantId: string): Promise<IParticipant | null> {
+    async getParticipantById(participantId: string): Promise<IParticipant|null> {
         return await db.Participant.findOne({ where: { id: participantId } });
     }
 
-    async createParticipant(participant: IParticipant): Promise<IParticipant | string> {
-        const isParticipantExist = await db.Participant.findOne({ where: { lastName: participant.lastName } });
-        const participants = await db.Participant.findAll();
+    async createParticipant(participant: IParticipant): Promise<IParticipant|string> {
+        const isParticipantExist: IParticipant = await db.Participant.findOne({ where: { lastName: participant.lastName } });
+        const participants: IParticipant[] = await db.Participant.findAll();
         const isGameStarted: IGame[] = await db.Game.findAll();
 
         if (isGameStarted.length) {
@@ -28,17 +28,20 @@ export class ParticipantsController {
         return await db.Participant.create(participant);
     }
 
-    async shuffle(): Promise<string> {
+    async shuffle(): Promise<{code: number, message: string}> {
         const isGameStarted: IGame[] = await db.Game.findAll();
 
         if (isGameStarted.length) {
-            return 'Sorry you are late we have been already celebrating';
+            return { code: 422, message: 'Sorry you are late we have been already celebrating' };
         }
 
         const participants: Model[] = await db.Participant.findAll();
 
         if (participants.length < 3) {
-            return `Min number of participants cannot be less than 3, now ${participants.length}`;
+            return {
+                code: 422,
+                message: `Min number of participants cannot be less than 3, now ${participants.length}`
+            };
         }
 
         participants.forEach((participant: any) => {
@@ -52,9 +55,9 @@ export class ParticipantsController {
             });
         });
 
-        await db.Game.create({isStarted: true});
+        await db.Game.create({ isStarted: true });
 
-        return 'Successfully shuffled';
+        return { code: 200, message: 'Successfully shuffled' };
     }
 }
 

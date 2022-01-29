@@ -80,12 +80,33 @@
         "operationId": "updateUser",
         "parameters": [
           {
-            "name": "id",
+            "name": "firstName",
             "in": "path",
-            "description": "id of a participant to create",
+            "description": "firstName of a participant to create",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "string"
+            }
+          },
+          {
+            "name": "lastName",
+            "in": "path",
+            "description": "lastName of a participant to create",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wishes",
+            "in": "path",
+            "description": "wishes of a participant to create",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
@@ -142,15 +163,7 @@
         "summary": "Shuffle a participant",
         "operationId": "participant",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Shuffle a participant",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
+          {}
         ],
         "responses": {
           "200": {
