@@ -1,0 +1,227 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Participant API",
+    "description": "This is a sample Participant API created with Express.js. You can find more about it [here](https://github.com/kasramp/sample-rest-with-expressjs).",
+    "contact": {
+      "email": ""
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "participant",
+      "description": "Operations about participant"
+    }
+  ],
+  "paths": {
+    "/api/v1/participants?id={id}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get a donee participant by id",
+        "operationId": "getParticipantById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of a participant",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Participant"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid id supplied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/participants": {
+      "post": {
+        "tags": [
+          "participant"
+        ],
+        "summary": "Create a participant",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "firstName",
+            "in": "path",
+            "description": "firstName of a participant to create",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lastName",
+            "in": "path",
+            "description": "lastName of a participant to create",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wishes",
+            "in": "path",
+            "description": "wishes of a participant to create",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated user object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Participant"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Participant"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload supplied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Participant not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/shuffle": {
+      "post": {
+        "tags": [
+          "shuffle"
+        ],
+        "summary": "Shuffle a participant",
+        "operationId": "participant",
+        "parameters": [
+          {}
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully shuffled"
+          },
+          "400": {
+            "description": "Invalid payload supplied"
+          },
+          "404": {
+            "description": "Participant not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Participant": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "wishes": {
+            "type": "array[]"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}
