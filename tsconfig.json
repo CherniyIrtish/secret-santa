@@ -4,7 +4,6 @@
     "module": "commonjs",
     "sourceMap": true,
     "outDir": "./build",
-    "rootDir": "./src",
     "strict": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
@@ -13,9 +12,11 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "preserveConstEnums": true
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "strictNullChecks": false
   },
   "lib": ["es2015"],
-  "include": ["src/**/*", "src/interfaces"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*", "src/interfaces", "lib/*"],
+  "exclude": ["node_modules"],
 }
